@@ -364,7 +364,7 @@ function loadPushCards() {
       compliment: extractTag(block, 'COMPLIMENT') || '',
       audit_date: getDateStr(),
       niche,
-      full_audit_text: '',
+      full_audit_text: block.trim(),
       pdf_filename: `${domain}_audit_${getDateStr()}.pdf`
     };
   });
