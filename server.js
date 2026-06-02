@@ -31,36 +31,68 @@ TRUST: Author bios, license, certifications, contact info, topical authority, ex
 SOCIAL: Platforms linked and activity, missing high-value platforms
 AI CITATION TRACKING: Citation mechanism, AI page/llms.txt, structured data for citation eligibility`;
 
+async function fetchDirect(url) {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 12000);
+  const res = await fetch(url, {
+    headers: {
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36',
+      'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+      'Accept-Language': 'en-US,en;q=0.5'
+    },
+    signal: ctrl.signal,
+    redirect: 'follow'
+  });
+  clearTimeout(timer);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const html = await res.text();
+  const $ = cheerio.load(html);
+  const title = $('title').first().text().trim();
+  const desc = $('meta[name="description"]').attr('content') || $('meta[property="og:description"]').attr('content') || '';
+  const schemas = [];
+  $('script[type="application/ld+json"]').each((_, el) => {
+    try { schemas.push(JSON.parse($(el).html())); } catch (e) {}
+  });
+  const schemaTypes = schemas.map(s => s['@type']).filter(Boolean).join(', ');
+  $('script,style,nav,footer,header,iframe,noscript').remove();
+  const text = $('body').text().replace(/\s+/g, ' ').trim().slice(0, 6000);
+  // If cheerio extracted almost nothing, the page is likely JS-rendered — treat as failure
+  if (text.length < 100) throw new Error('Insufficient content (likely JS-rendered or bot-blocked)');
+  return [
+    title && `TITLE: ${title}`,
+    desc && `META DESC: ${desc}`,
+    schemaTypes && `SCHEMAS: ${schemaTypes}`,
+    `TEXT: ${text}`
+  ].filter(Boolean).join('\n');
+}
+
+async function fetchViaJina(url) {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 20000);
+  const res = await fetch(`https://r.jina.ai/${url}`, {
+    headers: {
+      'Accept': 'text/plain',
+      'X-Timeout': '15'
+    },
+    signal: ctrl.signal
+  });
+  clearTimeout(timer);
+  if (!res.ok) throw new Error(`Jina HTTP ${res.status}`);
+  const text = await res.text();
+  if (text.length < 100) throw new Error('Jina returned insufficient content');
+  return text.slice(0, 6000);
+}
+
 async function fetchPage(url) {
   try {
-    const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), 12000);
-    const res = await fetch(url, {
-      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36' },
-      signal: ctrl.signal,
-      redirect: 'follow'
-    });
-    clearTimeout(timer);
-    if (!res.ok) return `[HTTP ${res.status}]`;
-    const html = await res.text();
-    const $ = cheerio.load(html);
-    const title = $('title').first().text().trim();
-    const desc = $('meta[name="description"]').attr('content') || $('meta[property="og:description"]').attr('content') || '';
-    const schemas = [];
-    $('script[type="application/ld+json"]').each((_, el) => {
-      try { schemas.push(JSON.parse($(el).html())); } catch (e) {}
-    });
-    const schemaTypes = schemas.map(s => s['@type']).filter(Boolean).join(', ');
-    $('script,style,nav,footer,header,iframe,noscript').remove();
-    const text = $('body').text().replace(/\s+/g, ' ').trim().slice(0, 6000);
-    return [
-      title && `TITLE: ${title}`,
-      desc && `META DESC: ${desc}`,
-      schemaTypes && `SCHEMAS: ${schemaTypes}`,
-      `TEXT: ${text}`
-    ].filter(Boolean).join('\n');
-  } catch (e) {
-    return `[Fetch error: ${e.message}]`;
+    return await fetchDirect(url);
+  } catch (directErr) {
+    try {
+      const jinaContent = await fetchViaJina(url);
+      return `[via Jina reader — direct fetch failed: ${directErr.message}]\n${jinaContent}`;
+    } catch (jinaErr) {
+      return `[Fetch failed — direct: ${directErr.message} | Jina: ${jinaErr.message}]`;
+    }
   }
 }
 
