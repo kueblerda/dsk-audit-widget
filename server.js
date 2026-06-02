@@ -1,5 +1,5 @@
 const express = require('express');
-const Anthropic = require('@anthropic-ai/sdk');
+const { GoogleGenerativeAI } = require('@google/generative-ai');
 const cheerio = require('cheerio');
 const path = require('path');
 
@@ -7,9 +7,9 @@ const app = express();
 app.use(express.json({ limit: '1mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const N8N_WEBHOOK = process.env.N8N_WEBHOOK_URL || 'https://primary-production-ffd3.up.railway.app/webhook/aeo-lead-ingest';
-const MODEL = process.env.ANTHROPIC_MODEL || 'claude-opus-4-8';
+const MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-pro';
 
 const AUDIT_CHECKLIST = `CONTENT STRUCTURE (AI Citation Readiness)
 - Direct answer in first 150-200 words?
@@ -130,16 +130,12 @@ PHONE_FROM_SITE: [phone or blank]
 ---`;
 
   try {
-    const stream = await anthropic.messages.stream({
-      model: MODEL,
-      max_tokens: 8192,
-      messages: [{ role: 'user', content: prompt }]
-    });
+    const model = genAI.getGenerativeModel({ model: MODEL });
+    const result = await model.generateContentStream(prompt);
 
-    for await (const chunk of stream) {
-      if (chunk.type === 'content_block_delta' && chunk.delta.type === 'text_delta') {
-        send({ text: chunk.delta.text });
-      }
+    for await (const chunk of result.stream) {
+      const text = chunk.text();
+      if (text) send({ text });
     }
     res.write('data: [DONE]\n\n');
   } catch (e) {
