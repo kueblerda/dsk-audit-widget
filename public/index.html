@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DSK Audit Engine</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3/tabler-icons.min.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --color-bg: #111111;
+      --color-surface: #1c1c1c;
+      --color-surface-raised: #242424;
+      --color-border: #2e2e2e;
+      --color-border-tertiary: #2e2e2e;
+      --color-text-primary: #e4e4e4;
+      --color-text-secondary: #888888;
+      --color-text-danger: #f87171;
+      --color-text-success: #34d399;
+      --color-background-primary: #1c1c1c;
+      --color-accent: #7c3aed;
+      --font-mono: 'Cascadia Code', 'SF Mono', 'Fira Code', Consolas, monospace;
+      --border-radius-lg: 8px;
+    }
+
+    body {
+      background: var(--color-bg);
+      color: var(--color-text-primary);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 28px 16px 80px;
+    }
+
+    .page-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 28px;
+      padding-bottom: 16px;
+      border-bottom: 0.5px solid var(--color-border);
+    }
+
+    .page-header h1 {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--color-text-primary);
+    }
+
+    .page-header .subtitle {
+      font-size: 12px;
+      color: var(--color-text-secondary);
+      margin-top: 1px;
+    }
+
+    section { margin-bottom: 20px; }
+
+    label {
+      font-size: 12px;
+      color: var(--color-text-secondary);
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    textarea {
+      width: 100%;
+      background: var(--color-surface);
+      border: 0.5px solid var(--color-border);
+      border-radius: 6px;
+      color: var(--color-text-primary);
+      font-size: 13px;
+      padding: 8px 10px;
+      outline: none;
+      font-family: inherit;
+      transition: border-color 0.15s;
+    }
+
+    input:focus, textarea:focus { border-color: #555; }
+    textarea { resize: vertical; }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    button {
+      background: var(--color-surface-raised);
+      border: 0.5px solid var(--color-border);
+      border-radius: 6px;
+      color: var(--color-text-primary);
+      cursor: pointer;
+      font-size: 12px;
+      padding: 8px 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: inherit;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    button:hover:not(:disabled) { background: #2e2e2e; border-color: #3a3a3a; }
+    button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .btn-primary {
+      background: var(--color-accent);
+      border-color: var(--color-accent);
+      color: #fff;
+      width: 100%;
+      justify-content: center;
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .btn-primary:hover:not(:disabled) { background: #6d28d9; border-color: #6d28d9; }
+
+    #status {
+      font-size: 12px;
+      color: var(--color-text-secondary);
+      min-height: 18px;
+      margin-top: 10px;
+    }
+
+    .divider {
+      border: none;
+      border-top: 0.5px solid var(--color-border);
+      margin: 20px 0;
+    }
+
+    .push-card {
+      background: var(--color-surface);
+      border: 0.5px solid var(--color-border);
+      border-radius: var(--border-radius-lg);
+      padding: 14px 16px;
+      margin-bottom: 10px;
+    }
+
+    .push-card-header { margin-bottom: 10px; }
+    .push-card-title { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 2px; }
+    .push-card-meta { font-size: 12px; color: var(--color-text-secondary); }
+
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+
+    .push-card-footer { display: flex; align-items: center; justify-content: space-between; }
+
+    .output-area {
+      background: var(--color-surface);
+      border: 0.5px solid var(--color-border);
+      border-radius: 6px;
+      color: var(--color-text-secondary);
+      font-size: 11px;
+      font-family: var(--font-mono);
+      padding: 10px;
+      width: 100%;
+      resize: vertical;
+      min-height: 120px;
+    }
+
+    .section-label {
+      font-size: 12px;
+      color: var(--color-text-secondary);
+      margin-bottom: 6px;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <div class="page-header">
+    <div>
+      <h1>DSK Audit Engine</h1>
+      <div class="subtitle">AEO lead acquisition — audit, generate emails, push to GHL</div>
+    </div>
+  </div>
+
+  <section>
+    <div class="grid-2" style="margin-bottom: 12px;">
+      <div>
+        <label>Niche / industry</label>
+        <input type="text" id="niche" placeholder="e.g. HVAC, Roofing, Plumbing" />
+      </div>
+      <div>
+        <label>Target city &amp; state</label>
+        <input type="text" id="location" placeholder="e.g. Tomball, TX" />
+      </div>
+    </div>
+    <div style="margin-bottom: 12px;">
+      <label>Your first name</label>
+      <input type="text" id="sender" value="David" />
+    </div>
+    <div>
+      <label>Website URLs (one per line, up to 5)</label>
+      <textarea id="urls" rows="5" placeholder="https://www.example1.com&#10;https://www.example2.com&#10;https://www.example3.com" style="font-family: var(--font-mono); font-size: 13px;"></textarea>
+    </div>
+  </section>
+
+  <section>
+    <button id="run-btn" class="btn-primary" onclick="sendAudit()">
+      <i class="ti ti-player-play"></i> Run Audit
+    </button>
+    <div id="status"></div>
+  </section>
+
+  <hr class="divider">
+
+  <section id="output-section">
+    <label class="section-label">Claude's output (auto-filled on completion — or paste manually)</label>
+    <textarea id="paste-output" class="output-area" rows="6" placeholder="Output appears here automatically after audit runs..."></textarea>
+    <button onclick="loadPushCards()" style="margin-top: 6px; font-size: 12px;">
+      <i class="ti ti-table-import"></i> Load push cards
+    </button>
+  </section>
+
+  <hr class="divider">
+
+  <section id="push-section" style="display: none;">
+    <p style="font-size: 12px; color: var(--color-text-secondary); margin-bottom: 12px;">Fill in short name and email for each contact, then push to n8n.</p>
+    <div id="push-cards"></div>
+  </section>
+
+</div>
+
+<script>
+function getUrls() {
+  return document.getElementById('urls').value.trim().split('\n').map(u => u.trim()).filter(u => u.length > 0).slice(0, 5);
+}
+
+function getDomain(url) {
+  try { return new URL(url).hostname.replace('www.', ''); }
+  catch (e) { return url.replace(/https?:\/\/(www\.)?/, '').split('/')[0]; }
+}
+
+function getDateStr() { return new Date().toISOString().split('T')[0]; }
+
+function setStatus(msg, color) {
+  const el = document.getElementById('status');
+  el.textContent = msg;
+  el.style.color = color || 'var(--color-text-secondary)';
+}
+
+function extractTag(text, tag) {
+  const normalized = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+  const re = new RegExp(
+    `^${tag}:[\\t ]*(.*(?:\\n(?![A-Z][A-Z0-9_]*[\\t ]*:|---).*)*?)(?=\\n[A-Z][A-Z0-9_]*[\\t ]*:|\\n---|---|$)`,
+    'im'
+  );
+  const m = normalized.match(re);
+  return m ? m[1].trim() : '';
+}
+
+async function sendAudit() {
+  const urlList = getUrls();
+  const niche = document.getElementById('niche').value.trim();
+  const location = document.getElementById('location').value.trim();
+  const sender = document.getElementById('sender').value.trim() || 'David';
+
+  if (!urlList.length) { setStatus('Enter at least one URL.'); return; }
+
+  const btn = document.getElementById('run-btn');
+  btn.disabled = true;
+  document.getElementById('paste-output').value = '';
+  document.getElementById('push-section').style.display = 'none';
+  setStatus('Starting...');
+
+  let fullText = '';
+  let buffer = '';
+
+  try {
+    const res = await fetch('/api/audit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ niche, location, sender, urls: urlList })
+    });
+
+    if (!res.ok) { setStatus('Server error ' + res.status, 'var(--color-text-danger)'); btn.disabled = false; return; }
+
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let done = false;
+
+    while (!done) {
+      const { done: streamDone, value } = await reader.read();
+      if (streamDone) break;
+
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n');
+      buffer = lines.pop();
+
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        const data = line.slice(6);
+        if (data === '[DONE]') { done = true; break; }
+        try {
+          const parsed = JSON.parse(data);
+          if (parsed.status) setStatus(parsed.status);
+          if (parsed.error) { setStatus('Error: ' + parsed.error, 'var(--color-text-danger)'); done = true; break; }
+          if (parsed.text) {
+            fullText += parsed.text;
+            document.getElementById('paste-output').value = fullText;
+          }
+        } catch (e) {}
+      }
+    }
+
+    if (fullText) {
+      loadPushCards();
+      setStatus('Done — push cards loaded below.', 'var(--color-text-success)');
+    }
+  } catch (e) {
+    setStatus('Failed: ' + e.message, 'var(--color-text-danger)');
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function loadPushCards() {
+  const text = document.getElementById('paste-output').value.trim();
+  if (!text) { setStatus('Paste Claude output first.'); return; }
+
+  const urlList = getUrls();
+  const niche = document.getElementById('niche').value.trim();
+  const location = document.getElementById('location').value.trim();
+  const blocks = text.split(/^---\s*$/m).filter(b => b.trim().length > 50);
+
+  const contacts = blocks.map((block, i) => {
+    const url = urlList[i] || '';
+    const domain = extractTag(block, 'SITE') || getDomain(url);
+    return {
+      url, domain,
+      business_name: extractTag(block, 'BUSINESS_NAME') || domain,
+      city: extractTag(block, 'CITY') || location.split(',')[0]?.trim() || '',
+      state: extractTag(block, 'STATE') || location.split(',')[1]?.trim() || '',
+      phone_from_site: extractTag(block, 'PHONE_FROM_SITE') || '',
+      email_1_subject: extractTag(block, 'EMAIL_1_SUBJECT_TAG'),
+      email_1_body: extractTag(block, 'EMAIL_1_BODY_TAG'),
+      email_2_subject: extractTag(block, 'EMAIL_2_SUBJECT_TAG'),
+      email_2_body: extractTag(block, 'EMAIL_2_BODY_TAG'),
+      audit_score: parseInt(extractTag(block, 'AUDIT_SCORE')) || 0,
+      priority_vulnerability: extractTag(block, 'PRIORITY_VULNERABILITY') || '',
+      compliment: extractTag(block, 'COMPLIMENT') || '',
+      audit_date: getDateStr(),
+      niche,
+      full_audit_text: '',
+      pdf_filename: `${domain}_audit_${getDateStr()}.pdf`
+    };
+  });
+
+  window._pushContacts = contacts;
+  renderPushCards(contacts);
+}
+
+function renderPushCards(contacts) {
+  const container = document.getElementById('push-cards');
+  container.innerHTML = '';
+  document.getElementById('push-section').style.display = 'block';
+
+  contacts.forEach((c, i) => {
+    const card = document.createElement('div');
+    card.className = 'push-card';
+    card.id = `push-card-${i}`;
+    card.innerHTML = `
+      <div class="push-card-header">
+        <div class="push-card-title">${c.business_name || c.domain}</div>
+        <div class="push-card-meta">${c.domain} &nbsp;·&nbsp; ${c.city}, ${c.state} &nbsp;·&nbsp; Score: ${c.audit_score}/100</div>
+      </div>
+      <div class="grid-3">
+        <div>
+          <label>Short name <span style="color:var(--color-text-danger)">*</span></label>
+          <input type="text" id="short-${i}" placeholder="e.g. DSK Leads" style="font-size:12px;" />
+        </div>
+        <div>
+          <label>Email <span style="color:var(--color-text-danger)">*</span></label>
+          <input type="email" id="email-${i}" placeholder="owner@business.com" style="font-size:12px;" />
+        </div>
+        <div>
+          <label>Phone</label>
+          <input type="text" id="phone-${i}" value="${c.phone_from_site || ''}" placeholder="(000) 000-0000" style="font-size:12px;" />
+        </div>
+      </div>
+      <div class="push-card-footer">
+        <div id="pstatus-${i}" style="font-size:12px;color:var(--color-text-secondary);">Ready to push</div>
+        <button id="pushbtn-${i}" style="font-size:12px;" onclick="pushContact(${i})">
+          <i class="ti ti-send"></i> Push to n8n
+        </button>
+      </div>`;
+    container.appendChild(card);
+  });
+}
+
+function updateStatus(idx, state, msg) {
+  const el = document.getElementById(`pstatus-${idx}`);
+  const btn = document.getElementById(`pushbtn-${idx}`);
+  if (el) {
+    el.textContent = msg;
+    el.style.color = state === 'success' ? 'var(--color-text-success)' : state === 'error' ? 'var(--color-text-danger)' : 'var(--color-text-secondary)';
+  }
+  if (btn) {
+    btn.disabled = state === 'loading' || state === 'success';
+    if (state === 'success') btn.innerHTML = '<i class="ti ti-check"></i> Pushed';
+  }
+}
+
+async function pushContact(idx) {
+  const contact = window._pushContacts[idx];
+  const short_name = document.getElementById(`short-${idx}`)?.value.trim();
+  const email = document.getElementById(`email-${idx}`)?.value.trim();
+  const phone = (document.getElementById(`phone-${idx}`)?.value.trim() || contact.phone_from_site || '').replace(/\D/g, '');
+
+  if (!short_name) { updateStatus(idx, 'error', 'Short name required'); return; }
+  if (!email) { updateStatus(idx, 'error', 'Email required'); return; }
+
+  updateStatus(idx, 'loading', 'Pushing to n8n...');
+
+  const payload = {
+    source: 'dsk_audit_tool',
+    timestamp: new Date().toISOString(),
+    contact: {
+      short_name,
+      business_name: contact.business_name,
+      domain: contact.domain,
+      website_url: contact.url,
+      phone,
+      email,
+      city: contact.city,
+      state: contact.state,
+      niche: contact.niche,
+      contact_source: 'Google Maps Lookup'
+    },
+    audit: {
+      overall_score: contact.audit_score,
+      priority_vulnerability: contact.priority_vulnerability,
+      compliment: contact.compliment === 'NONE' ? '' : contact.compliment,
+      audit_date: contact.audit_date
+    },
+    emails: {
+      email_1_subject: contact.email_1_subject,
+      email_1_body: contact.email_1_body,
+      email_2_subject: contact.email_2_subject,
+      email_2_body: contact.email_2_body
+    },
+    report: {
+      full_audit_text: contact.full_audit_text,
+      pdf_filename: contact.pdf_filename
+    }
+  };
+
+  try {
+    const res = await fetch('/api/push', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if (res.ok) {
+      const data = await res.json().catch(() => ({}));
+      updateStatus(idx, 'success', `Created in GHL — ${data.pipeline_stage || 'Audited — Not Contacted'}`);
+    } else {
+      updateStatus(idx, 'error', `n8n returned ${res.status}`);
+    }
+  } catch (e) {
+    updateStatus(idx, 'error', `Push failed: ${e.message}`);
+  }
+}
+</script>
+</body>
+</html>
