@@ -245,13 +245,31 @@ function setStatus(msg, color) {
 }
 
 function extractTag(text, tag) {
-  const normalized = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
-  const re = new RegExp(
-    `^${tag}:[\\t ]*(.*(?:\\n(?![A-Z][A-Z0-9_]*[\\t ]*:|---).*)*?)(?=\\n[A-Z][A-Z0-9_]*[\\t ]*:|\\n---|---|$)`,
-    'im'
-  );
-  const m = normalized.match(re);
-  return m ? m[1].trim() : '';
+  const lines = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n');
+  const tagUpper = tag.toUpperCase() + ':';
+  let startIdx = -1;
+  let inlineValue = '';
+
+  for (let i = 0; i < lines.length; i++) {
+    const trimmed = lines[i].trimStart();
+    if (trimmed.toUpperCase().startsWith(tagUpper)) {
+      startIdx = i;
+      inlineValue = trimmed.slice(tagUpper.length).trim();
+      break;
+    }
+  }
+
+  if (startIdx === -1) return '';
+  if (inlineValue) return inlineValue;
+
+  // Body starts on next line — collect until next ALL_CAPS_TAG: or end
+  const nextTagRe = /^[A-Z][A-Z0-9_]*:/;
+  const result = [];
+  for (let i = startIdx + 1; i < lines.length; i++) {
+    if (nextTagRe.test(lines[i].trimStart())) break;
+    result.push(lines[i]);
+  }
+  return result.join('\n').trim();
 }
 
 async function sendAudit() {
