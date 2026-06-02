@@ -1,7 +1,7 @@
 {
   "name": "dsk-audit-widget",
   "version": "1.0.0",
-  "engines": { "node": ">=18" },
+  "engines": { "node": ">=20" },
   "scripts": { "start": "node server.js" },
   "dependencies": {
     "@google/generative-ai": "^0.21.0",
