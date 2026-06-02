@@ -141,8 +141,9 @@ LENGTH: 100-130 words max. Subject under 10 words.
 
 EMAIL #2:
 VOICE: Reply to YES — acknowledgment not fresh pitch. Casual authority. No jargon.
-STRUCTURE: Open acknowledging reply → biggest vulnerability plain language → 30-min Google Meet CTA "no pitch" → P.S. one sentence of AI urgency. Do NOT include any links, URLs, or placeholders in the body.
-LENGTH: 150-180 words max.
+STRUCTURE: Acknowledge their reply → biggest vulnerability in plain language → 30-min Google Meet CTA "no pitch".
+DO NOT include: salutation, sign-off, sender name, P.S., any links, URLs, or placeholders. The template adds those automatically.
+LENGTH: 100-130 words max. Body content only — no greeting, no closing.
 
 OUTPUT each site using EXACTLY these tags, each on its own line:
 ---
