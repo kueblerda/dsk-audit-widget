@@ -132,11 +132,24 @@ SITES:
 ${pages.join('\n\n---\n\n')}
 
 EMAIL #1:
-VOICE: Casual authority, random discovery framing, first name sign-off only, no jargon, plain business language about lost calls and invisible rankings.
-COMPLIMENT: One genuine specific positive observation if earned — skip entirely if nothing real.
-VULNERABILITIES: Three findings costing most calls — AI visibility > schema > content structure > trust > social > technical.
-AUDIT MENTION: Mention that a full audit has already been completed and is ready to send.
-CTA: End with exactly — "Reply YES and I'll send it over -- no cost and no strings attached. Take it to whoever you want for implementation."
+USE THIS EXACT STRUCTURE — no deviation:
+
+Hey,
+
+[One genuine specific compliment on something real — skip this line entirely if nothing stands out]
+
+However, I found three areas costing you potential customer calls and "invisible" AI rankings:
+
+1. [First vulnerability — most impactful, plain language, no jargon]
+2. [Second vulnerability]
+3. [Third vulnerability]
+
+I've already completed a full audit detailing these findings.
+
+Reply YES and I'll send it over -- no cost and no strings attached. Take it to whoever you want for implementation.
+[Sender first name]
+
+VULNERABILITIES priority order: AI visibility > schema > content structure > trust > social > technical.
 LENGTH: 100-130 words max. Subject under 10 words.
 
 EMAIL #2:
