@@ -135,7 +135,8 @@ EMAIL #1:
 VOICE: Casual authority, random discovery framing, first name sign-off only, no jargon, plain business language about lost calls and invisible rankings.
 COMPLIMENT: One genuine specific positive observation if earned — skip entirely if nothing real.
 VULNERABILITIES: Three findings costing most calls — AI visibility > schema > content structure > trust > social > technical.
-CTA: End with exactly — "Reply YES and I'll send it over — no strings attached, take it to whoever you want."
+AUDIT MENTION: Mention that a full audit has already been completed and is ready to send.
+CTA: End with exactly — "Reply YES and I'll send it over -- no cost and no strings attached. Take it to whoever you want for implementation."
 LENGTH: 100-130 words max. Subject under 10 words.
 
 EMAIL #2:
