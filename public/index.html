@@ -456,11 +456,13 @@ async function pushContact(idx) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     });
+    const data = await res.json().catch(() => ({}));
     if (res.ok) {
-      const data = await res.json().catch(() => ({}));
       updateStatus(idx, 'success', `Created in GHL — ${data.pipeline_stage || 'Audited — Not Contacted'}`);
     } else {
-      updateStatus(idx, 'error', `n8n returned ${res.status}`);
+      const detail = data.message || data.error || JSON.stringify(data);
+      updateStatus(idx, 'error', `Error: ${detail}`);
+      console.error('Push payload:', JSON.stringify(payload, null, 2));
     }
   } catch (e) {
     updateStatus(idx, 'error', `Push failed: ${e.message}`);
