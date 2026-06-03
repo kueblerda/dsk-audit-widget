@@ -192,6 +192,7 @@ BUSINESS_NAME: [full business name]
 CITY: [city]
 STATE: [state abbreviation]
 PHONE_FROM_SITE: [phone or blank]
+EXEC_SUMMARY_TAG: [2-3 sentence executive summary on a SINGLE LINE — the site's current position, what's working, and the single biggest opportunity. No line breaks. Example: "Knockout Cleaning has a strong local presence with genuine reviews and clear CTAs, but the site was built for 2022 SEO. The #1 gap is zero structured data — no schema markup of any kind — which is blocking AI visibility entirely."]
 FULL_AUDIT_REPORT_TAG:
 [Ten category lines then OVERALL — exact pipe format: Category Name|Score|2-3 sentence finding with specific issues found]
 SEO Fundamentals|[0-100]|[finding]
@@ -205,6 +206,28 @@ Technical|[0-100]|[finding]
 Social Presence|[0-100]|[finding]
 Source Quality|[0-100]|[finding]
 OVERALL|[0-100]|[one sentence overall assessment]
+SECTION_DETAILS_TAG:
+[For each of the 10 scoring categories IN THE SAME ORDER, output a block separated by ===]
+[Category Name exactly as above]
+working: [2-4 specific things already working on THIS site — semicolon-separated, concrete and site-specific, not generic]
+issue: [Specific issue found on this site]|HIGH|[Exact actionable fix — specific, not generic]
+issue: [Another specific issue]|MEDIUM|[Recommendation]
+issue: [Another issue if present]|LOW|[Recommendation]
+===
+[Next category name]
+working: [points]
+issue: [issue]|HIGH|[recommendation]
+===
+[Continue for all 10 categories. RULES: lowercase "working:" and "issue:" labels. Use === between categories. HIGH = fix this week. MEDIUM = fix this month. LOW = nice to have. 2-4 issues per category max. Be site-specific.]
+ACTION_PLAN_TAG:
+[Prioritized actions for this specific site. TIER1 = do first, 1-2 weeks, highest ROI. TIER2 = month 2, moderate effort. TIER3 = ongoing compound returns. 3-5 items per tier.]
+TIER1|[Specific action — what exactly to do on this site]|[Impact: e.g. GEO + AIO]
+TIER1|[Action]|[Impact]
+TIER1|[Action]|[Impact]
+TIER2|[Action]|[Impact]
+TIER2|[Action]|[Impact]
+TIER3|[Action]|[Impact]
+TIER3|[Action]|[Impact]
 ---`;
 
   try {

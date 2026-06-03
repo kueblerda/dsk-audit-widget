@@ -365,6 +365,9 @@ function loadPushCards() {
       audit_date: getDateStr(),
       niche,
       full_audit_text: extractTag(block, 'FULL_AUDIT_REPORT_TAG'),
+      exec_summary: extractTag(block, 'EXEC_SUMMARY_TAG'),
+      section_details: extractTag(block, 'SECTION_DETAILS_TAG'),
+      action_plan_text: extractTag(block, 'ACTION_PLAN_TAG'),
       pdf_filename: `${domain}_audit_${getDateStr()}.pdf`
     };
   });
@@ -464,6 +467,9 @@ async function pushContact(idx) {
     },
     report: {
       full_audit_text: contact.full_audit_text,
+      exec_summary: contact.exec_summary,
+      section_details: contact.section_details,
+      action_plan_text: contact.action_plan_text,
       pdf_filename: contact.pdf_filename
     }
   };
