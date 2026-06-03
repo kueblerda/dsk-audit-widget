@@ -363,12 +363,7 @@ function loadPushCards() {
       priority_vulnerability: extractTag(block, 'PRIORITY_VULNERABILITY') || '',
       compliment: extractTag(block, 'COMPLIMENT') || '',
       audit_date: getDateStr(),
-      niche,
-      full_audit_text: extractTag(block, 'FULL_AUDIT_REPORT_TAG'),
-      exec_summary: extractTag(block, 'EXEC_SUMMARY_TAG'),
-      section_details: extractTag(block, 'SECTION_DETAILS_TAG'),
-      action_plan_text: extractTag(block, 'ACTION_PLAN_TAG'),
-      pdf_filename: `${domain}_audit_${getDateStr()}.pdf`
+      niche
     };
   });
 
@@ -465,13 +460,7 @@ async function pushContact(idx) {
       email_2_subject: contact.email_2_subject,
       email_2_body: contact.email_2_body
     },
-    report: {
-      full_audit_text: contact.full_audit_text,
-      exec_summary: contact.exec_summary,
-      section_details: contact.section_details,
-      action_plan_text: contact.action_plan_text,
-      pdf_filename: contact.pdf_filename
-    }
+    report: {}
   };
 
   try {

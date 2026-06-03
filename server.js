@@ -118,14 +118,14 @@ app.post('/api/audit', async (req, res) => {
 
   send({ status: 'Analyzing with Claude...' });
 
-  const prompt = `AUDIT_TOOL_REQUEST: full
+  const prompt = `AUDIT_TOOL_REQUEST: email_only
 SENDER: ${sender}
 NICHE: ${niche}
 LOCATION: ${location}
 
-Evaluate each site below against the AEO/AIO audit checklist. Write complete finished Email #1 and Email #2 per site. No placeholders. Ready to send.
+Evaluate each site below and write complete, ready-to-send Email #1 and Email #2 per site. No placeholders.
 
-AUDIT CHECKLIST:
+AUDIT CHECKLIST (use to identify vulnerabilities):
 ${AUDIT_CHECKLIST}
 
 SITES:
@@ -160,22 +160,6 @@ STRUCTURE: Acknowledge their reply → biggest vulnerability in plain language �
 DO NOT include: salutation, sign-off, sender name, P.S., any links, URLs, or placeholders. The template adds those automatically.
 LENGTH: 100-130 words max. Body content only — no greeting, no closing.
 
-AUDIT SCORING — Score each category 0–100 based only on what is verifiable from the scraped page content and HTML source.
-Scoring guide: 0–29 = critical gap, 30–59 = needs work, 60–79 = adequate, 80–100 = strong.
-If a signal cannot be verified from the page source, score it 0–20 and note "unable to verify from page source."
-
-SCORING CATEGORIES:
-- SEO Fundamentals: meta title (has keyword + location?), meta description present?, canonical tag, OG tags complete, Twitter card
-- Schema Markup: LocalBusiness, FAQ, Review/Aggregate, Article/HowTo, Service schemas — which are present vs missing
-- Content Structure: direct answer in first 150-200 words?, question-format headings?, bullets/lists present?, AI-extraction ready vs buried in marketing prose
-- AEO — Answer Engine: FAQ sections present?, question-format headings?, conversational direct answers early in content
-- GEO — Generative Engine: llms.txt present?, ai.domain.com subdomain?, NAP (name/address/phone) on-page and structured, service area pages
-- AIO — AI Overview: structured content eligible for AI citation?, review schema with star ratings?, local intent queries directly answered
-- Trust & Authority: contact info visible?, physical address present?, certifications/licenses shown?, author credentials, topical authority signals
-- Technical: SSL (infer from https), mobile viewport meta tag present?, XML sitemap linked?, no obvious error signals
-- Social Presence: which social platforms linked?, missing high-value platforms for this niche
-- Source Quality: original specific content vs generic copy?, stats/data/first-party insights?, blog present with recent dates?
-
 OUTPUT each site using EXACTLY these tags, each on its own line:
 ---
 SITE: [domain]
@@ -185,49 +169,13 @@ EMAIL_1_BODY_TAG:
 EMAIL_2_SUBJECT_TAG: [subject line only — no other text on this line]
 EMAIL_2_BODY_TAG:
 [full email body starts on next line]
-AUDIT_SCORE: [overall score 0-100 — must match OVERALL line in FULL_AUDIT_REPORT_TAG]
-PRIORITY_VULNERABILITY: [one sentence]
-COMPLIMENT: [one sentence or NONE]
+AUDIT_SCORE: [overall score 0-100 based on site quality across SEO, schema, content, trust, technical]
+PRIORITY_VULNERABILITY: [one sentence — the single most impactful issue found]
+COMPLIMENT: [one genuine specific compliment or NONE]
 BUSINESS_NAME: [full business name]
 CITY: [city]
 STATE: [state abbreviation]
-PHONE_FROM_SITE: [phone or blank]
-EXEC_SUMMARY_TAG: [2-3 sentence executive summary on a SINGLE LINE — the site's current position, what's working, and the single biggest opportunity. No line breaks. Example: "Knockout Cleaning has a strong local presence with genuine reviews and clear CTAs, but the site was built for 2022 SEO. The #1 gap is zero structured data — no schema markup of any kind — which is blocking AI visibility entirely."]
-FULL_AUDIT_REPORT_TAG:
-[Ten category lines then OVERALL — exact pipe format: Category Name|Score|2-3 sentence finding with specific issues found]
-SEO Fundamentals|[0-100]|[finding]
-Schema Markup|[0-100]|[finding]
-Content Structure|[0-100]|[finding]
-AEO — Answer Engine|[0-100]|[finding]
-GEO — Generative Engine|[0-100]|[finding]
-AIO — AI Overview|[0-100]|[finding]
-Trust & Authority|[0-100]|[finding]
-Technical|[0-100]|[finding]
-Social Presence|[0-100]|[finding]
-Source Quality|[0-100]|[finding]
-OVERALL|[0-100]|[one sentence overall assessment]
-SECTION_DETAILS_TAG:
-[For each of the 10 scoring categories IN THE SAME ORDER, output a block separated by ===]
-[Category Name exactly as above]
-working: [2-4 specific things already working on THIS site — semicolon-separated, concrete and site-specific, not generic]
-issue: [Specific issue found on this site]|HIGH|[Exact actionable fix — specific, not generic]
-issue: [Another specific issue]|MEDIUM|[Recommendation]
-issue: [Another issue if present]|LOW|[Recommendation]
-===
-[Next category name]
-working: [points]
-issue: [issue]|HIGH|[recommendation]
-===
-[Continue for all 10 categories. RULES: lowercase "working:" and "issue:" labels. Use === between categories. HIGH = fix this week. MEDIUM = fix this month. LOW = nice to have. 2-4 issues per category max. Be site-specific.]
-ACTION_PLAN_TAG:
-[Prioritized actions for this specific site. TIER1 = do first, 1-2 weeks, highest ROI. TIER2 = month 2, moderate effort. TIER3 = ongoing compound returns. 3-5 items per tier.]
-TIER1|[Specific action — what exactly to do on this site]|[Impact: e.g. GEO + AIO]
-TIER1|[Action]|[Impact]
-TIER1|[Action]|[Impact]
-TIER2|[Action]|[Impact]
-TIER2|[Action]|[Impact]
-TIER3|[Action]|[Impact]
-TIER3|[Action]|[Impact]
+PHONE_FROM_SITE: [phone number or blank]
 ---`;
 
   try {
