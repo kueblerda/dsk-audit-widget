@@ -136,6 +136,8 @@ USE THIS EXACT STRUCTURE — no deviation:
 
 Hey,
 
+[One natural sentence about how you found them — you were researching/browsing {niche} businesses in {location} and came across their site. Vary the phrasing naturally, keep it casual and brief. Example phrasings: "I was randomly browsing {niche} websites in {location} and came across yours." / "I was doing some research on {niche} companies in {location} and stumbled on your site." — always fill in the actual niche and location, never use placeholders]
+
 [One genuine specific compliment on something real — skip this line entirely if nothing stands out]
 
 However, I found three areas costing you potential customer calls and "invisible" AI rankings:
