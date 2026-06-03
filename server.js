@@ -158,6 +158,22 @@ STRUCTURE: Acknowledge their reply → biggest vulnerability in plain language �
 DO NOT include: salutation, sign-off, sender name, P.S., any links, URLs, or placeholders. The template adds those automatically.
 LENGTH: 100-130 words max. Body content only — no greeting, no closing.
 
+AUDIT SCORING — Score each category 0–100 based only on what is verifiable from the scraped page content and HTML source.
+Scoring guide: 0–29 = critical gap, 30–59 = needs work, 60–79 = adequate, 80–100 = strong.
+If a signal cannot be verified from the page source, score it 0–20 and note "unable to verify from page source."
+
+SCORING CATEGORIES:
+- SEO Fundamentals: meta title (has keyword + location?), meta description present?, canonical tag, OG tags complete, Twitter card
+- Schema Markup: LocalBusiness, FAQ, Review/Aggregate, Article/HowTo, Service schemas — which are present vs missing
+- Content Structure: direct answer in first 150-200 words?, question-format headings?, bullets/lists present?, AI-extraction ready vs buried in marketing prose
+- AEO — Answer Engine: FAQ sections present?, question-format headings?, conversational direct answers early in content
+- GEO — Generative Engine: llms.txt present?, ai.domain.com subdomain?, NAP (name/address/phone) on-page and structured, service area pages
+- AIO — AI Overview: structured content eligible for AI citation?, review schema with star ratings?, local intent queries directly answered
+- Trust & Authority: contact info visible?, physical address present?, certifications/licenses shown?, author credentials, topical authority signals
+- Technical: SSL (infer from https), mobile viewport meta tag present?, XML sitemap linked?, no obvious error signals
+- Social Presence: which social platforms linked?, missing high-value platforms for this niche
+- Source Quality: original specific content vs generic copy?, stats/data/first-party insights?, blog present with recent dates?
+
 OUTPUT each site using EXACTLY these tags, each on its own line:
 ---
 SITE: [domain]
@@ -167,13 +183,26 @@ EMAIL_1_BODY_TAG:
 EMAIL_2_SUBJECT_TAG: [subject line only — no other text on this line]
 EMAIL_2_BODY_TAG:
 [full email body starts on next line]
-AUDIT_SCORE: [0-100]
+AUDIT_SCORE: [overall score 0-100 — must match OVERALL line in FULL_AUDIT_REPORT_TAG]
 PRIORITY_VULNERABILITY: [one sentence]
 COMPLIMENT: [one sentence or NONE]
 BUSINESS_NAME: [full business name]
 CITY: [city]
 STATE: [state abbreviation]
 PHONE_FROM_SITE: [phone or blank]
+FULL_AUDIT_REPORT_TAG:
+[Ten category lines then OVERALL — exact pipe format: Category Name|Score|2-3 sentence finding with specific issues found]
+SEO Fundamentals|[0-100]|[finding]
+Schema Markup|[0-100]|[finding]
+Content Structure|[0-100]|[finding]
+AEO — Answer Engine|[0-100]|[finding]
+GEO — Generative Engine|[0-100]|[finding]
+AIO — AI Overview|[0-100]|[finding]
+Trust & Authority|[0-100]|[finding]
+Technical|[0-100]|[finding]
+Social Presence|[0-100]|[finding]
+Source Quality|[0-100]|[finding]
+OVERALL|[0-100]|[one sentence overall assessment]
 ---`;
 
   try {
